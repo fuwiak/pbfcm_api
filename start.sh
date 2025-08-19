@@ -1,5 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
-PORT="${PORT:-8000}"
-APP_MODULE="${APP_MODULE:-pbfcm_api:app}"
-exec uvicorn "$APP_MODULE" --host 0.0.0.0 --port "$PORT" --workers 1 --log-level warning
+#!/bin/bash
+
+# Start script for Railway deployment
+# Single worker is optimal for the shared Chromium engine
+
+# Use Railway's PORT environment variable or default to 8000
+PORT=${PORT:-8000}
+
+# Start the FastAPI app with uvicorn
+exec uvicorn pbfcm_api:app \
+    --host 0.0.0.0 \
+    --port $PORT \
+    --workers 1 \
+    --loop uvloop \
+    --http httptools \
+    --log-level info
